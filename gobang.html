@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>五子棋dom版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="gobang.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #table {
+            width: max-content;
+            height: max-content;
+            background: rgb(232, 200, 166);
+            display: flex;
+            /* flex-direction: column; */
+            overflow: hidden;
+        }
+        #control{
+            height:600px;
+            display: flex;
+            flex-direction: column;
+            margin-left:10px;
+            justify-content: space-around
+        }
+        .line {
+            display: flex
+        }
+
+        .box {
+            width: 38px;
+            height: 38px;
+            border: 1px solid black
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="table"></div>
+        <div id='control'>
+            <button onclick="restart()">重开</button>
+            <button onclick="back()">悔棋</button>
+            <button onclick="cancelBack()">撤销悔棋</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
