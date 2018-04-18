@@ -22,21 +22,41 @@
             align-items: center;
         }
 
+        #table-all{
+            width: 620px;
+            height: 620px;
+            background: rgb(232, 200, 166);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         #table {
+            max-width: 600px;
+            max-height: 600px;
             width: max-content;
             height: max-content;
             background: rgb(232, 200, 166);
             display: flex;
+            border: 1px solid;
             /* flex-direction: column; */
             overflow: hidden;
         }
-        #control{
-            height:600px;
+
+        #table1 {
+            /* width: 600px;
+            height: 600px; */
+            background: rgb(232, 200, 166);
+        }
+
+        .control {
+            height: 600px;
             display: flex;
             flex-direction: column;
-            margin-left:10px;
-            justify-content: space-around
+            margin-left: 10px;
+            justify-content: space-around;
         }
+
         .line {
             display: flex
         }
@@ -50,15 +70,37 @@
 </head>
 
 <body>
-    <div class="container">
-        <div id="table"></div>
-        <div id='control'>
-            <button onclick="restart()">重开</button>
-            <button onclick="back()">悔棋</button>
-            <button onclick="cancelBack()">撤销悔棋</button>
+    <div style="height:100vh">
+        <div id='dom' class="container">
+            <div id='table-all'>
+                <div id="table"></div>
+            </div>
+            <div class='control'>
+                <div style="display:flex;flex-direction:column">
+                    <button onclick="change()">切换版本</button>
+                    <span>当前版本:dom</span>
+                </div>
+                <button onclick="restart()">重开</button>
+                <button id='dom-back' onclick="back(event)">悔棋</button>
+                <button onclick="cancelBack()">撤销悔棋</button>
+            </div>
         </div>
-    </div>
+        <div id='canvas' class="container" style="display:none">
+            <canvas id="table1" width="620" height="620"></canvas>
+            <div class='control'>
+                <div style="display:flex;flex-direction:column">
+                    <button onclick="change()">切换版本</button>
+                    <span>当前版本:canvas</span>
+                </div>
+                <button onclick="restartC()">重开</button>
+                <button id='canvas-back' onclick="back(event)">悔棋</button>
+                <button onclick="cancelBackC()">撤销悔棋</button>
+            </div>
+        </div>
 
+
+
+    </div>
 </body>
 
 </html>
