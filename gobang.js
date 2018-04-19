@@ -11,13 +11,13 @@ window.onload = () => {
 }
 edition = 'dom' //当前版本
 temp = null //悔的那步棋
-tempCanvas={
-    img:null,
-    chess:null
+tempCanvas = {
+    img: null,
+    chess: null
 }
 backTime = 0 //悔棋次数
 chessArr = [] //棋子数组
-initState=null
+initState = null
 canvasStates = [] //保存canvas状态
 /**
  * 改版本
@@ -42,13 +42,13 @@ function loadTable() {
         table1.height = table1.height
         let ctx = table1.getContext('2d')
         for (var i = 0; i <= 15; i++) {
-            draw(ctx, 10, i*40+10, 610, i*40+10)
-            draw(ctx, i*40+10, 10, i*40+10, 610)
+            draw(ctx, 10, i * 40 + 10, 610, i * 40 + 10)
+            draw(ctx, i * 40 + 10, 10, i * 40 + 10, 610)
         }
         ctx.stroke()
-        initState=ctx.getImageData(0, 0, 620, 620)
+        initState = ctx.getImageData(0, 0, 620, 620)
         canvasStates.push(initState) //保存棋盘状态
-        canvas.addEventListener('click', a, true)
+        table1.addEventListener('click', a, true)
     } else {
         canvas.style.display = 'none'
         dom.style.display = 'flex'
@@ -73,7 +73,9 @@ function draw(ctx, x, y, x1, y1) {
 
 function a(event) { //用于绑定和解绑
     edition == 'dom' ?
-        create(event.clientX, event.clientY) : createC(event.offsetX-10, event.offsetY-10)
+        create(event.clientX, event.clientY) :
+        createC(event.offsetX - 10, event.offsetY - 10)
+
 }
 
 /**
@@ -85,7 +87,7 @@ function create(x, y) {
     chess.style.position = 'absolute'
     var _x = x - table.offsetLeft
     var _y = y - table.offsetTop
-    if (_x % 40 >= 5 && _x % 40 <= 35 || _y % 40 >= 5 && _y % 40 <= 35) { //不在半径范围内
+    if (_x % 40 >= 15 && _x % 40 <= 25 || _y % 40 >= 15 && _y % 40 <= 25) { //不在半径范围内
         return
     } else {
         let chessX = table.offsetLeft + Math.round(_x / 40) * 40 - 10.5 //获取准确left,top值以定位棋子
@@ -116,13 +118,13 @@ function create(x, y) {
  * 下棋 - canvas
  */
 function createC(x, y) {
-    if (x % 40 >= 5 && x % 40 <= 35 || y % 40 >= 5 && y % 40 <= 35) { //不在半径范围内
+    if (x % 40 >= 15 && x % 40 <= 25 || y % 40 >= 15 && y % 40 <= 25) { //不在半径范围内
         return
-    }else {
+    } else {
         let ctx = table1.getContext('2d')
         let chessX = Math.round(x / 40) * 40 + 10
         let chessY = Math.round(y / 40) * 40 + 10
-        if(chessArr.filter(item=>item.x==chessX&&item.y==chessY).length!=0) return
+        if (chessArr.filter(item => item.x == chessX && item.y == chessY).length != 0) return
         canvasStates.push(ctx.getImageData(0, 0, 620, 620)) //保存下棋前的状态
         ctx.beginPath()
         ctx.arc(chessX, chessY, 10, 0, 2 * Math.PI)
@@ -144,9 +146,9 @@ function createC(x, y) {
                     alert(a)
                 }, 0);
                 chessArr = []
-                tempCanvas={
-                    img:null,
-                    chess:null
+                tempCanvas = {
+                    img: null,
+                    chess: null
                 }
             }
         }
@@ -171,13 +173,13 @@ function restartC() {
     let ctx = table1.getContext('2d')
     ctx.putImageData(initState, 0, 0)
     chessArr = []
-    tempCanvas={
-        img:null,
-        chess:null
+    tempCanvas = {
+        img: null,
+        chess: null
     }
     canvasStates = []
     backTime = 0
-    canvas.addEventListener('click', a, true)
+    table1.addEventListener('click', a, true)
 }
 /**
  * 悔棋 - dom
@@ -224,9 +226,9 @@ function cancelBackC(params) {
         let ctx = table1.getContext('2d')
         ctx.putImageData(tempCanvas.img, 0, 0)
         chessArr.push(tempCanvas.chess)
-        tempCanvas={
-            img:null,
-            chess:null
+        tempCanvas = {
+            img: null,
+            chess: null
         }
     } else {
         alert('没有悔棋哦！')
@@ -260,7 +262,7 @@ function ifWin() {
             }
         }
         if (leftRightCount == 5) {
-            edition=='dom'?table.removeEventListener('click', a, true):canvas.removeEventListener('click',a,true)
+            edition == 'dom' ? table.removeEventListener('click', a, true) : table1.removeEventListener('click', a, true)
             return lastChess.type == 'black' ? '黑棋胜利' : '白棋胜利'
         }
     }
@@ -282,7 +284,7 @@ function ifWin() {
             }
         }
         if (upDownCount == 5) {
-            edition=='dom'?table.removeEventListener('click', a, true):canvas.removeEventListener('click',a,true)
+            edition == 'dom' ? table.removeEventListener('click', a, true) : table1.removeEventListener('click', a, true)
             return lastChess.type == 'black' ? '黑棋胜利' : '白棋胜利'
         }
     }
@@ -304,7 +306,7 @@ function ifWin() {
             }
         }
         if (angCount == 5) {
-            edition=='dom'?table.removeEventListener('click', a, true):canvas.removeEventListener('click',a,true)
+            edition == 'dom' ? table.removeEventListener('click', a, true) : table1.removeEventListener('click', a, true)
             return lastChess.type == 'black' ? '黑棋胜利' : '白棋胜利'
         }
     }
