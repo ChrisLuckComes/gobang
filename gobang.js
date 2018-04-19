@@ -19,6 +19,7 @@ backTime = 0 //悔棋次数
 chessArr = [] //棋子数组
 initState = null
 canvasStates = [] //保存canvas状态
+end = false
 /**
  * 改版本
  */
@@ -87,11 +88,12 @@ function create(x, y) {
     chess.style.position = 'absolute'
     var _x = x - table.offsetLeft
     var _y = y - table.offsetTop
-    if (_x % 40 >= 15 && _x % 40 <= 25 || _y % 40 >= 15 && _y % 40 <= 25) { //不在半径范围内
+    if (_x % 40 >= 19 && _x % 40 <= 21 || _y % 40 >= 19 && _y % 40 <= 21) { //不在半径范围内
         return
     } else {
         let chessX = table.offsetLeft + Math.round(_x / 40) * 40 - 10.5 //获取准确left,top值以定位棋子
         let chessY = table.offsetTop + Math.round(_y / 40) * 40 - 10.5
+        if (chessArr.filter(item => item.x == chessX && item.y == chessY).length != 0) return
         chess.style.left = chessX + 'px'
         chess.style.top = chessY + 'px'
         chessArr.length % 2 == 0 ? chess.src = 'black.png' : chess.src = 'white.png'
@@ -106,6 +108,7 @@ function create(x, y) {
             if (a) {
                 setTimeout(() => {
                     alert(a)
+                    end = true
                 }, 0);
                 chessArr = []
                 temp = null
@@ -118,7 +121,7 @@ function create(x, y) {
  * 下棋 - canvas
  */
 function createC(x, y) {
-    if (x % 40 >= 15 && x % 40 <= 25 || y % 40 >= 15 && y % 40 <= 25) { //不在半径范围内
+    if (x % 40 >= 19 && x % 40 <= 21 || y % 40 >= 19 && y % 40 <= 21) { //不在半径范围内
         return
     } else {
         let ctx = table1.getContext('2d')
@@ -144,6 +147,7 @@ function createC(x, y) {
             if (a) {
                 setTimeout(() => {
                     alert(a)
+                    end = true
                 }, 0);
                 chessArr = []
                 tempCanvas = {
@@ -163,7 +167,8 @@ function restart() {
     chessArr = []
     temp = null
     backTime = 0
-    table.addEventListener('click', a, true)
+    if (end == true)
+        table.addEventListener('click', a, true)
 }
 
 /**
@@ -179,7 +184,8 @@ function restartC() {
     }
     canvasStates = []
     backTime = 0
-    table1.addEventListener('click', a, true)
+    if (end == true)
+        table1.addEventListener('click', a, true)
 }
 /**
  * 悔棋 - dom
@@ -240,7 +246,8 @@ function cancelBackC(params) {
 function ifWin() {
     var leftRightCount = 1
     var upDownCount = 1
-    var angCount = 1
+    var leftDownRightTopCount = 1
+    var leftTopRightDownCount = 1
     var blackArr = chessArr.filter(item => item.type == 'black')
     var whiteArr = chessArr.filter(item => item.type == 'white')
     var lastChess = chessArr[chessArr.length - 1]
@@ -288,27 +295,44 @@ function ifWin() {
             return lastChess.type == 'black' ? '黑棋胜利' : '白棋胜利'
         }
     }
-    //判断斜向
-    for (let i = lastChess.x - 40, j = lastChess.x + 40, k = lastChess.y - 40, l = lastChess.y + 40; i > 0, j < table.offsetLeft + 600, k > 0, l < table.offsetTop + 600; i -= 40, j += 40, k -= 40, l += 40) {
-        if (lastChess.type == 'black') {
-            let tempCount = blackArr.filter(item => (item.x == i && item.y == k) || (item.x == j && item.y == l)).length
-            if (tempCount > 0) {
-                angCount += tempCount
-            } else {
-                break
-            }
-        } else {
-            let tempCount = whiteArr.filter(item => (item.x == i && item.y == k) || (item.x == j && item.y == l)).length
-            if (tempCount > 0) {
-                angCount += tempCount
-            } else {
-                break
-            }
+    //判断左下右上斜向
+    for (let i = lastChess.x - 40, j = lastChess.x + 40, k = lastChess.y + 40, l = lastChess.y - 40; i > 0, j < table.offsetLeft + 600, k < table.offsetTop + 600, l > 0; i -= 40, j += 40, k += 40, l -= 40) {
+        let c = doCount('leftDownRightTop', i, j, k, l)
+        if (c == 0) break
+        else leftDownRightTopCount += c
+        if (leftDownRightTopCount == 5) {
+            edition == 'dom' ? table.removeEventListener('click', a, true) : table1.removeEventListener('click', a, true)
+            return lastChess.type == 'black' ? '黑棋胜利' : '白棋胜利'
         }
-        if (angCount == 5) {
+    }
+    //判断左上右下斜向
+    for (let i = lastChess.x - 40, j = lastChess.x + 40, k = lastChess.y - 40, l = lastChess.y + 40; i > 0, j < table.offsetLeft + 600, k > 0, l < table.offsetTop + 600; i -= 40, j += 40, k -= 40, l += 40) {
+        let c = doCount('leftTopRightDown', i, j, k, l)
+        if (c == 0) break
+        else leftTopRightDownCount += c
+        if (leftTopRightDownCount == 5) {
             edition == 'dom' ? table.removeEventListener('click', a, true) : table1.removeEventListener('click', a, true)
             return lastChess.type == 'black' ? '黑棋胜利' : '白棋胜利'
         }
     }
 
+    function doCount(type, i, j, k, l) {
+        let count = 0
+        if (lastChess.type == 'black') {
+            let tempCount = blackArr.filter(item => (item.x == i && item.y == k) || (item.x == j && item.y == l)).length
+            if (tempCount > 0) {
+                count += tempCount
+            } else {
+                return 0
+            }
+        } else {
+            let tempCount = whiteArr.filter(item => (item.x == i && item.y == k) || (item.x == j && item.y == l)).length
+            if (tempCount > 0) {
+                count += tempCount
+            } else {
+                return 0
+            }
+        }
+        return count
+    }
 }
