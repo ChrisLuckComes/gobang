@@ -68,7 +68,7 @@ function loadTable() {
 function draw(ctx, x, y, x1, y1) {
     ctx.moveTo(x, y)
     ctx.lineTo(x1, y1)
-    ctx.lineWidth = '1.1'
+    ctx.lineWidth = '2'
 }
 
 function a(event) { //用于绑定和解绑
